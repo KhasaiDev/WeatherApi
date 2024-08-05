@@ -1,5 +1,6 @@
 package com.example.weatherapi.models
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,18 +19,22 @@ class WeatherViewModel:ViewModel() {
     private fun fetchWeather() {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.instance.getWeather()
+                val response = RetrofitClient.instance.getWeather(-33.43107, -70.64666, "fcd51b9342252e2bb7daa90b7f20c2e7")
                 if (response.isSuccessful) {
                     response.body()?.let {
                         _weather.value = Result.success(it)
                     } ?: run {
                         _weather.value = Result.failure(Exception("Empty response body"))
+                        Log.e("WeatherViewModel", "Empty response body")
                     }
                 } else {
-                    _weather.value = Result.failure(Exception("Error: ${response.errorBody()?.string()}"))
+                    val errorBody = response.errorBody()?.string()
+                    _weather.value = Result.failure(Exception("Error: $errorBody"))
+                    Log.e("WeatherViewModel", "Error: $errorBody")
                 }
             } catch (e: Exception) {
                 _weather.value = Result.failure(e)
+                Log.e("WeatherViewModel", "Exception: ${e.message}")
             }
         }
     }

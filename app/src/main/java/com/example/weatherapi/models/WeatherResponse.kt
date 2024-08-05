@@ -1,5 +1,7 @@
 package com.example.weatherapi.models
 
+import com.google.gson.annotations.SerializedName
+
 data class WeatherResponse (
     val coord: Coord,
     val weather: List<Weather>,
@@ -7,14 +9,14 @@ data class WeatherResponse (
     val main: Main,
     val visibility: Long,
     val wind: Wind,
-    val rain: Rain,
     val clouds: Clouds,
     val dt: Long,
     val sys: Sys,
     val timezone: Long,
     val id: Long,
     val name: String,
-    val cod: Long
+    val cod: Long,
+    val rain: Rain? = null
 )
 
 data class Clouds (
@@ -33,12 +35,13 @@ data class Main (
     val tempMax: Double,
     val pressure: Long,
     val humidity: Long,
-    val seaLevel: Long,
-    val grndLevel: Long
+    val seaLevel: Long? = null, // Hacer opcionales estos campos si no siempre están presentes
+    val grndLevel: Long? = null
 )
 
 data class Rain (
-    val the1H: Double
+    @SerializedName("1h")
+    val oneHour: Double? = null
 )
 
 data class Sys (
